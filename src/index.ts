@@ -43,11 +43,12 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
                 timeout = setTimeout(() => {
                     page++;
                     load(query, ctx, cb);
-                }, rand(500, 2500));
+                }, rand(25000, 4500));
             } else {
                 ctx.reply('Search ended. Waiting 10 minutes for new search.');
             }
         } catch (e) {
+            console.error(e, data);
             ctx.reply('Search ended. Waiting 10 minutes for new search.');
         }
     });
