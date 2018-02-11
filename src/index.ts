@@ -28,14 +28,14 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
         returnResults += successJob.length;
         cb({jobs, successJob, total, currentPrevResult: (prevResult + jobs.length), currentPage: page});
 
-        readyIDS[ctx.from.id] = readyIDS[ctx.from.id] || [];
+        readyIDS[ctx.from.id + query] = readyIDS[ctx.from.id] || [];
 
         jobs.forEach(({ciphertext}: any, index: number) => {
-            if (readyIDS[ctx.from.id].indexOf(ciphertext) !== -1 && index > 0) {
+            if (readyIDS[ctx.from.id + query].indexOf(ciphertext) !== -1 && index > 0) {
                 next = false;
             }
         });
-        readyIDS[ctx.from.id].push(...jobs.map(({ciphertext}: any) => ciphertext));
+        readyIDS[ctx.from.id + query].push(...jobs.map(({ciphertext}: any) => ciphertext));
 
         if ((prevResult + jobs.length) < total && returnResults <= maxReturnResults && next) {
             prevResult += jobs.length;
