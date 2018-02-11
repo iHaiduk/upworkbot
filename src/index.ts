@@ -20,30 +20,34 @@ let returnResults = 0;
 const load = (query: string = 'react.js', ctx: any, cb: any) => {
     get(query, page, (err: any, data: any) => {
         if (err) {return; }
-        const result = JSON.parse(data);
-        const {paging, jobs = []} = result.searchResults;
-        const {total} = paging;
-        const successJob = testResult(jobs);
-        let next = true;
-        returnResults += successJob.length;
-        cb({jobs, successJob, total, currentPrevResult: (prevResult + jobs.length), currentPage: page});
+        try {
+            const result = JSON.parse(data);
+            const {paging, jobs = []} = result.searchResults;
+            const {total} = paging;
+            const successJob = testResult(jobs);
+            let next = true;
+            returnResults += successJob.length;
+            cb({jobs, successJob, total, currentPrevResult: (prevResult + jobs.length), currentPage: page});
 
-        readyIDS[ctx.from.id + query] = readyIDS[ctx.from.id] || [];
+            readyIDS[ctx.from.id + query] = readyIDS[ctx.from.id] || [];
 
-        jobs.forEach(({ciphertext}: any, index: number) => {
-            if (readyIDS[ctx.from.id + query].indexOf(ciphertext) !== -1 && index > 0) {
-                next = false;
+            jobs.forEach(({ciphertext}: any, index: number) => {
+                if (readyIDS[ctx.from.id + query].indexOf(ciphertext) !== -1 && index > 0) {
+                    next = false;
+                }
+            });
+            readyIDS[ctx.from.id + query].push(...jobs.map(({ciphertext}: any) => ciphertext));
+
+            if ((prevResult + jobs.length) < total && returnResults <= maxReturnResults && next) {
+                prevResult += jobs.length;
+                timeout = setTimeout(() => {
+                    page++;
+                    load(query, ctx, cb);
+                }, rand(500, 2500));
+            } else {
+                ctx.reply('Search ended. Waiting 10 minutes for new search.');
             }
-        });
-        readyIDS[ctx.from.id + query].push(...jobs.map(({ciphertext}: any) => ciphertext));
-
-        if ((prevResult + jobs.length) < total && returnResults <= maxReturnResults && next) {
-            prevResult += jobs.length;
-            timeout = setTimeout(() => {
-                page++;
-                load(query, ctx, cb);
-            }, rand(500, 2500));
-        } else {
+        } catch (e) {
             ctx.reply('Search ended. Waiting 10 minutes for new search.');
         }
     });
