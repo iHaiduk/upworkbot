@@ -1,0 +1,25 @@
+{
+  "extends": ["tslint:latest"],
+  "rules": {
+    "max-line-length": [false, 150],
+    "no-console": [true, "debug", "info", "log", "time", "timeEnd", "trace"],
+    "no-var-requires": false,
+    "no-submodule-imports": false,
+    "object-literal-sort-keys": false,
+    "jsx-no-multiline-js": false,
+    "max-classes-per-file": [true, 3],
+    "prefer-conditional-expression": false,
+    "one-line": false,
+    "only-arrow-functions": false,
+    "no-conditional-assignment": false,
+    "quotemark": [true, "single", "jsx-double"],
+    "object-literal-key-quotes": [true, "as-needed"]
+  },
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**/*",
+      "README.md",
+      "src_canvas"
+    ]
+  }
+}

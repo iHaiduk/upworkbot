@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es2015"],
+    "outDir": "dist",
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "inlineSources": true,
+    "types": ["node"]
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "forkChecker": true,
+    "useWebpackText": true,
+    "useCache": true,
+    "cacheDirectory": ".gulp/ts",
+    "useTranspileModule": true,
+    "silent": true,
+    "useBabel": true,
+    "babelOptions": {
+      "presets": ["stage-0", ["env", { "targets": { "node": "current" } }]],
+      "plugins": ["closure-elimination", "loop-optimizer"]
+    }
+  },
+  "exclude": [
+    ".gulp",
+    "node_modules",
+    "server",
+    "dist"
+  ],
+
+  "include": [
+    "./src/**/*"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
+}

@@ -1,0 +1,5 @@
+.awcache
+.idea
+.gulp
+dist
+node_modules

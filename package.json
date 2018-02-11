@@ -1,0 +1,41 @@
+{
+  "name": "upwork",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Ihor Haiduk",
+  "license": "MIT",
+  "scripts": {
+    "build:dev": "./node_modules/.bin/webpack --colors --config ./webpack.config.js",
+    "build:prod": "./node_modules/.bin/webpack --colors --config ./webpack.config.prod.js",
+    "run:dev": "./node_modules/.bin/nodemon ./dist/index.js"
+  },
+  "devDependencies": {
+    "@types/axios": "0.14.0",
+    "@types/node": "9.4.0",
+    "awesome-typescript-loader": "3.4.1",
+    "babel-loader": "7.1.2",
+    "babel-plugin-closure-elimination": "1.3.0",
+    "babel-plugin-loop-optimizer": "1.4.1",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-stage-0": "6.24.1",
+    "nodemon": "1.14.12",
+    "source-map-loader": "0.2.3",
+    "ts-loader": "3.4.0",
+    "tslint": "5.9.1",
+    "typescript": "2.7.1",
+    "uglifyjs-webpack-plugin": "1.1.8",
+    "webpack": "3.10.0",
+    "webpack-cli": "2.0.4",
+    "webpack-error-notification": "0.1.7",
+    "webpack-node-externals": "1.6.0"
+  },
+  "dependencies": {
+    "axios": "0.17.1",
+    "koa": "2.4.1",
+    "koa-router": "7.4.0",
+    "moment": "2.20.1",
+    "node-cmd": "3.0.0",
+    "telegraf": "3.17.7",
+    "xml2json": "0.11.0"
+  }
+}
