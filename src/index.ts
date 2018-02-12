@@ -49,7 +49,7 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
             }
         } catch (e) {
             console.error(e, data);
-            ctx.reply('Search ended. Waiting 10 minutes for new search.');
+            ctx.reply('Search ended. Waiting 30 minutes for new search.');
         }
     });
 };
@@ -129,7 +129,7 @@ bot.hears(/find/i, (ctx: any) => {
         prevResult = 0;
         returnResults = 0;
         botAnswer(queryString, ctx);
-    }, 10 * 60 * 1000, query);
+    }, 30 * 60 * 1000, query);
 
 });
 
