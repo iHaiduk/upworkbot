@@ -38,12 +38,12 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
             });
             readyIDS[ctx.from.id + query].push(...jobs.map(({ciphertext}: any) => ciphertext));
 
-            if ((prevResult + jobs.length) < total && returnResults <= maxReturnResults && next && page < 15) {
+            if ((prevResult + jobs.length) < total && returnResults <= maxReturnResults && next && page < 30) {
                 prevResult += jobs.length;
                 timeout = setTimeout(() => {
                     page++;
                     load(query, ctx, cb);
-                }, rand(15000, 35000));
+                }, rand(10000, 18000));
             } else {
                 ctx.reply('Search ended. Waiting 10 minutes for new search.');
             }
