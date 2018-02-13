@@ -16,6 +16,7 @@ let interval: any;
 let prevResult = 0;
 const maxReturnResults = 100;
 let returnResults = 0;
+let pointCount = 4;
 
 const load = (query: string = 'react.js', ctx: any, cb: any) => {
     get(query, page, (err: any, data: any) => {
@@ -24,12 +25,12 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
             const result = JSON.parse(data);
             const {paging, jobs = []} = result.searchResults;
             const {total} = paging;
-            const successJob = testResult(jobs);
+            const successJob = testResult(jobs, pointCount);
             let next = true;
             returnResults += successJob.length;
             cb({jobs, successJob, total, currentPrevResult: (prevResult + jobs.length), currentPage: page});
 
-            readyIDS[ctx.from.id + query] = readyIDS[ctx.from.id] || [];
+            readyIDS[ctx.from.id + query] = readyIDS[ctx.from.id + query] || [];
 
             jobs.forEach(({ciphertext}: any, index: number) => {
                 if (readyIDS[ctx.from.id + query].indexOf(ciphertext) !== -1 && index > 0) {
@@ -44,8 +45,6 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
                     page++;
                     load(query, ctx, cb);
                 }, rand(10000, 18000));
-            } else {
-                ctx.reply('Search ended. Waiting 10 minutes for new search.');
             }
         } catch (e) {
             console.error(e, data);
@@ -56,7 +55,7 @@ const load = (query: string = 'react.js', ctx: any, cb: any) => {
 
 const rand = (min: number, max: number): number => (max - min) * Math.random() + min;
 
-const testResult = (jobs: any[]) => {
+const testResult = (jobs: any[], skillCountNeed = 4) => {
     return jobs
         .map(({subcategory2, ciphertext, title, skills = [], amount, client, tierText, publishedOn}: any) => {
             if (subcategory2 !== 'Web Development') { return false; }
@@ -92,7 +91,7 @@ const testResult = (jobs: any[]) => {
                 skillCount++;
             }
 
-            if (skillCount >= 4) {
+            if (skillCount >= skillCountNeed) {
                 return {
                     ciphertext,
                     title,
@@ -109,29 +108,6 @@ const testResult = (jobs: any[]) => {
         })
         .filter((a: any) => Boolean(a));
 };
-
-bot.start((ctx: any) => {
-    return ctx.reply('Welcome! Write /help for see all settings.');
-});
-bot.hears(/find/i, (ctx: any) => {
-    const query = ctx.update.message.text.replace(/(find(\s+)?)/i, '').replace(/^\s+/, '');
-    ctx.reply('Searching...');
-    page = 1;
-    prevResult = 0;
-    returnResults = 0;
-    clearTimeout(timeout);
-    clearInterval(interval);
-
-    botAnswer(query, ctx);
-
-    interval = setInterval((queryString) => {
-        page = 1;
-        prevResult = 0;
-        returnResults = 0;
-        botAnswer(queryString, ctx);
-    }, 30 * 60 * 1000, query);
-
-});
 
 const botAnswer = (query: string, ctx: any) => {
     load(query, ctx, ({successJob, total, currentPrevResult, currentPage}: any) => {
@@ -158,6 +134,34 @@ const botAnswer = (query: string, ctx: any) => {
     });
 };
 
+bot.start((ctx: any) => {
+    return ctx.reply('Welcome! Write /help for see all settings.');
+});
+bot.hears(/find/i, (ctx: any) => {
+    const query = ctx.update.message.text.replace(/(find(\s+)?)/i, '').replace(/^\s+/, '');
+    ctx.reply('Searching...');
+    page = 1;
+    prevResult = 0;
+    returnResults = 0;
+    clearTimeout(timeout);
+    clearInterval(interval);
+
+    botAnswer(query, ctx);
+
+    interval = setInterval((queryString) => {
+        page = 1;
+        prevResult = 0;
+        returnResults = 0;
+        botAnswer(queryString, ctx);
+    }, 30 * 60 * 1000, query);
+
+});
+
+bot.hears(/setpoint/i, (ctx: any) => {
+    const query = parseInt(ctx.update.message.text.replace(/setpoint/i, '').replace(/^\s+/, ''), 10);
+    pointCount = query;
+});
+
 bot.command('stop', (ctx: any) => {
     clearTimeout(timeout);
     clearInterval(interval);
@@ -167,11 +171,17 @@ bot.command('stop', (ctx: any) => {
     ctx.reply('Stopped');
 });
 
+bot.command('point', (ctx: any) => {
+    ctx.reply('Current point: ' + pointCount);
+});
+
 bot.command('help', (ctx: any) => {
     let answer = '/start - Welcome :)\n';
     answer += '/help - return list of commands\n';
     answer += 'find $Query - starting search jobs by criteria $Query. Example: find React.js\n';
     answer += '/stop - stop search system\n';
+    answer += 'setpoint $number - change total skill points\n';
+    answer += '/point - return total skill points\n';
     ctx.reply(answer);
 });
 
